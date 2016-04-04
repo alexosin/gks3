@@ -13,4 +13,3 @@ prob += 78*x1+90*x2
 status = prob.solve(GLPK(path='C:/Users/Oleksandr/Desktop/winglpk-4.59/glpk-4.59/w32/glpsol.exe', msg=0))
 
 print(value(x1), value(x2))
-
