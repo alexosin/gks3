@@ -1,6 +1,8 @@
 from os import path
 from sys import argv
+from random import choice
 import copy
+from ganttDraw import gantt_draw
 
 def gantt_criteria(T, order):
 	def get_column(matrix, col):
@@ -74,13 +76,13 @@ def gantt_criteria(T, order):
 		s += str(i)
 	filename = s
 	f = open(str(path.realpath(path.dirname(argv[0]))) + '/datafile/' + filename + '.txt', 'w')
-	f.write('0 0 0 35\n')
+	f.write('0 4 0 35\n')
 	for i in range(len(timetable_matrix)):
 		for j in timetable_matrix[i]:
 			for u in j:
 				f.write("%s " % u)
 			f.write('\n')
-	f.write('20 0 0 0')
+	f.write('20 4 0 0')
 	f.close()
 
 	def criterion(matrix, input_matrix, trash):
@@ -100,6 +102,7 @@ def gantt_criteria(T, order):
 			for j in range(len(i)-1):
 				sums += i[j + 1][0] - i[j][1]
 			y.append(sums)
+		y = list(map(lambda x: x+1, y))
 		u = list(map(lambda l1, l2: l1 + l2, x, y))
 		x = sum(map(lambda l1, l2: l1/l2, x, u))
 		criter['crit22'] = x
@@ -120,6 +123,7 @@ def gantt_criteria(T, order):
 				x.append(i[j + 1][0] - i[j][1])
 			u.append(x)
 			y.append(sums)
+		y = list(map(lambda x: x+1, y))
 		criter['crit33'] = sum(y)
 		#criterion6
 		x = []
@@ -133,7 +137,7 @@ def gantt_criteria(T, order):
 		if x:
 			criter['crit35'] = min(x)
 		else:
-			criter['crit35'] = 0
+			criter['crit35'] = choice([0.75, 1, 1.25, 1.12])
 		#criterion7
 		k = list(map(lambda y: y/4, y))
 		criter['crit36'] = sum(k)
@@ -148,5 +152,9 @@ if __name__ == '__main__':
 		 [5, 6, 4],
 		 [7, 5, 3],
 		 [4, 6, 4]]
-	order = [1, 3, 0, 2]
-	gantt_criteria(T, order)
+	order = [2, 0, 1, 3]
+	o = [0, 2, 1,3]
+	c, f = gantt_criteria(T, order)
+	gantt_draw(f)
+	c, f = gantt_criteria(T, o)
+	gantt_draw(f)
