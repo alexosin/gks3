@@ -92,7 +92,7 @@ def gantt_criteria(T, order):
 		criter = {}
 		for i in matrix:
 			x = list(map(lambda y: max(y), [j[2:] for j in i]))
-		criter['crit11'] = min(x)
+		criter['crit11'] = max(x)
 		# criterion2
 		x, y = [], []
 		for i in range(3):
@@ -119,25 +119,19 @@ def gantt_criteria(T, order):
 			sums = 0
 			x = []
 			for j in range(len(i)-1):
+				if j == 0:
+					sums += i[j][0]
 				sums += i[j + 1][0] - i[j][1]
 				x.append(i[j + 1][0] - i[j][1])
-			u.append(x)
 			y.append(sums)
-		y = list(map(lambda x: x+1, y))
 		criter['crit33'] = sum(y)
 		#criterion6
 		x = []
-		for i in range(len(u)):
-			k = []
-			for j in u[i]:
-				if sum(u[i]) != 0:
-					k.append( j / sum(u[i]))
-			if k:
-				x.append(max(k))
-		if x:
-			criter['crit35'] = min(x)
-		else:
-			criter['crit35'] = choice([0.75, 1, 1.25, 1.12])
+		for i in y:
+			if i:
+				x.append(sum(y) / i)
+
+		criter['crit35'] = max(x)
 		#criterion7
 		k = list(map(lambda y: y/4, y))
 		criter['crit36'] = sum(k)
