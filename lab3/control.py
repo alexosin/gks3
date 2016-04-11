@@ -15,7 +15,7 @@ T = [[7, 3, 5],
 m = 3
 n = 4
 order = [0, 1, 2, 3]
-johnson_baby = '1320'
+#optimized_order = '1320'
 
 filepath = str(path.realpath(path.dirname(argv[0]))) + '\data.txt'
 data = []
@@ -35,7 +35,7 @@ for i in range(len(T)):
 T = T_copy[:]
 
 johnson_order(T, m, n)
-print('optimized: ', list(map(lambda x: int(x)+ 1, johnson_baby)))
+optimized_order = input('Enter optimized order based on the table (first group time sorted by asc, second group time sorted by desc): ')
 
 file_list = []
 cmp_criter = []
@@ -74,7 +74,7 @@ list_max['crit35'] = [i[0] for i in cmp_criter if i[1]['crit35']==maxim['crit35'
 list_max['crit36'] = [i[0] for i in cmp_criter if i[1]['crit36']==maxim['crit36']]
 johnson_cmp = {}
 for i in cmp_criter:
-	if i[0] == johnson_baby:
+	if i[0] == optimized_order:
 		if i[1]['crit11'] == maxim['crit11']:
 			johnson_cmp['crit11']  = 'Yes'
 		else:
@@ -105,7 +105,7 @@ for i in cmp_criter:
 			johnson_cmp['crit36'] = 'No'
 
 table2 = PrettyTable()
-table2.field_names = ['','value',  'optimized', johnson_baby]
+table2.field_names = ['','value',  'optimized', optimized_order]
 for i in list_max:
 	table2.add_row([i, maxim[i], list_max[i], johnson_cmp[i]])
 print(table2)
