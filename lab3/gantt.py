@@ -89,7 +89,7 @@ def gantt_criteria(T, order):
 		# calculate for 7 criterion
 		criter = {}
 		for i in trash: # tijk - момент окончания выполнения операции Lij
-			tijk = list(map(lambda y: max(y), [j[:] for j in i]))
+			tijk = list(map(lambda y: max(y), [j for j in i]))
 		tkr, tkp, nk = [], [], [] # tkr - суммарное время выпол. операции на единице обор.
 		for i in range(3): # tkp - суммарное время простоя единицы обор.
 			tkr.append(sum(get_column(input_matrix, i)))
@@ -114,12 +114,13 @@ def gantt_criteria(T, order):
 				sums += x
 				if x:
 					pros += 1
+			sums += i[0][0]
+			if i[0][0]:
+				pros += 1
 			tijo.append(sums)
 			nj.append(pros)
-
 		criter = {}
 		criter['crit11'] = max(tijk)
-		#criterion 2.*
 		criter['crit22'] = round(sum(map(lambda l1, l2: l1/(l1 + l2),
 															tkr, tkp)), 2)
 		criter['crit25'] = sum(tkp)
@@ -128,8 +129,8 @@ def gantt_criteria(T, order):
 		criter['crit33'] = sum(tijo)
 		criter['crit35'] = max(map(lambda l1, l2: l1/l2 if l2 != 0 else 0,
 															tijo, nj))
-		criter['crit36'] = sum(map(lambda l1, l2: l1/l2 if l2 != 0 else 0,
-															tijo, nj))
+		criter['crit36'] = round(sum(map(lambda l1, l2: l1/l2 if l2 != 0 else 0,
+															tijo, nj)), 1)
 		return criter
 	criter = criterion(T, trash_matrix)
 	return criter, filename
@@ -139,7 +140,7 @@ if __name__ == '__main__':
 		 [5, 6, 4],
 		 [7, 5, 3],
 		 [4, 6, 4]]
-	order = [2, 0, 3, 1]
+	order = [1, 0, 3, 2]
 	#o = [0, 2, 1,3]
 	c, f = gantt_criteria(T, order)
 	gantt_draw(f)

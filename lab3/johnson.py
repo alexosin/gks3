@@ -1,5 +1,4 @@
 from prettytable import PrettyTable
-import itertools
 
 def johnson_order(T, m, n):
 	def cmp(x):
