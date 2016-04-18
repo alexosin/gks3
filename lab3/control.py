@@ -35,8 +35,8 @@ for i in range(len(T)):
 T = T_copy[:]
 
 johnson_order(T, m, n)
-optimized_order = input('Enter optimized order based on the table (first group time sorted by asc, second group time sorted by desc): ')
-
+#optimized_order = input('Enter optimized order based on the table (first group time sorted by asc, second group time sorted by desc): ')
+optimized_order = ['1320', '3120', '1302', '3102']
 file_list = []
 cmp_criter = []
 perms = list(permutations(order, 4))
@@ -72,40 +72,47 @@ list_max['crit27'] = [i[0] for i in cmp_criter if i[1]['crit27']==maxim['crit27'
 list_max['crit33'] = [i[0] for i in cmp_criter if i[1]['crit33']==maxim['crit33']]
 list_max['crit35'] = [i[0] for i in cmp_criter if i[1]['crit35']==maxim['crit35']]
 list_max['crit36'] = [i[0] for i in cmp_criter if i[1]['crit36']==maxim['crit36']]
+
 johnson_cmp = {}
-for i in cmp_criter:
-	if i[0] == optimized_order:
-		if i[1]['crit11'] == maxim['crit11']:
-			johnson_cmp['crit11']  = 'Yes'
-		else:
-			johnson_cmp['crit11'] = 'No'
-		if i[1]['crit22'] == maxim['crit22']:
-			johnson_cmp['crit22']  = 'Yes'
-		else:
-			johnson_cmp['crit22'] = 'No'
-		if i[1]['crit25'] == maxim['crit25']:
-			johnson_cmp['crit25']  = 'Yes'
-		else:
-			johnson_cmp['crit25'] = 'No'
-		if i[1]['crit27'] == maxim['crit27']:
-			johnson_cmp['crit27']  = 'Yes'
-		else:
-			johnson_cmp['crit27'] = 'No'
-		if i[1]['crit33'] == maxim['crit33']:
-			johnson_cmp['crit33']  = 'Yes'
-		else:
-			johnson_cmp['crit33'] = 'No'
-		if i[1]['crit35'] == maxim['crit35']:
-			johnson_cmp['crit35']  = 'Yes'
-		else:
-			johnson_cmp['crit35'] = 'No'
-		if i[1]['crit36'] == maxim['crit36']:
-			johnson_cmp['crit36']  = 'Yes'
-		else:
-			johnson_cmp['crit36'] = 'No'
+for i in optimized_order:
+	johnson_cmp[i] = {}
+
+for u in optimized_order:
+	for i in cmp_criter:
+		if i[0] == u:
+			if i[1]['crit11'] == maxim['crit11']:
+				johnson_cmp[u]['crit11']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit11'] = 'No'
+			if i[1]['crit22'] == maxim['crit22']:
+				johnson_cmp[u]['crit22']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit22'] = 'No'
+			if i[1]['crit25'] == maxim['crit25']:
+				johnson_cmp[u]['crit25']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit25'] = 'No'
+			if i[1]['crit27'] == maxim['crit27']:
+				johnson_cmp[u]['crit27']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit27'] = 'No'
+			if i[1]['crit33'] == maxim['crit33']:
+				johnson_cmp[u]['crit33']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit33'] = 'No'
+			if i[1]['crit35'] == maxim['crit35']:
+				johnson_cmp[u]['crit35']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit35'] = 'No'
+			if i[1]['crit36'] == maxim['crit36']:
+				johnson_cmp[u]['crit36']  = 'Yes'
+			else:
+				johnson_cmp[u]['crit36'] = 'No'
 
 table2 = PrettyTable()
-table2.field_names = ['','value',  'optimized', optimized_order]
+table2.field_names = ['','value',  'optimized', '3102', '1302', '3120', '1320']
 for i in list_max:
-	table2.add_row([i, maxim[i], list_max[i], johnson_cmp[i]])
+	table2.add_row([i, maxim[i], list_max[i], johnson_cmp['3102'][i],
+				johnson_cmp['1302'][i], johnson_cmp['3120'][i],
+				johnson_cmp['1320'][i]])
 print(table2)

@@ -85,60 +85,53 @@ def gantt_criteria(T, order):
 	f.write('20 4 0 0')
 	f.close()
 
-	def criterion(matrix, input_matrix, trash):
+	def criterion(input_matrix, trash):
 		# calculate for 7 criterion
-
-		#criterion1
 		criter = {}
-		for i in matrix:
-			x = list(map(lambda y: max(y), [j[2:] for j in i]))
-		criter['crit11'] = max(x)
-		# criterion2
-		x, y = [], []
-		for i in range(3):
-			x.append(sum(get_column(input_matrix, i)))
-		for i in trash:
-			sums = 0
+		for i in trash: # tijk - момент окончания выполнения операции Lij
+			tijk = list(map(lambda y: max(y), [j[:] for j in i]))
+		tkr, tkp, nk = [], [], [] # tkr - суммарное время выпол. операции на единице обор.
+		for i in range(3): # tkp - суммарное время простоя единицы обор.
+			tkr.append(sum(get_column(input_matrix, i)))
+		for i in trash: # nk - количество простоев
+			sums, pros = 0, 0
 			for j in range(len(i)-1):
-				sums += i[j + 1][0] - i[j][1]
-			y.append(sums)
-		y = list(map(lambda x: x+1, y))
-		u = list(map(lambda l1, l2: l1 + l2, x, y))
-		x = sum(map(lambda l1, l2: l1/l2, x, u))
-		criter['crit22'] = x
-		#criterion3
-		criter['crit25'] = sum(y)
-		#criterion4
-		k = list(map(lambda y: y/4, y))
-		criter['crit27'] = sum(k)
-		#criterion5
-		k, y, u = [], [], []
-		for i in range(len(trash)):
-			k.append(get_column(trash, i))
-		for i in k:
-			sums = 0
-			x = []
+				x = i[j + 1][0] - i[j][1]
+				sums += x
+				if x:
+					pros += 1
+			sums += i[0][0]
+			if i[0][0]:
+				pros += 1
+			tkp.append(sums)
+			nk.append(pros)
+		tijo, nj = [], [] # tij0 - ожидание детали на операцию, nj - кол. ожид.
+		x = [get_column(trash, i) for i in range(4)]
+		for i in x:
+			sums, pros = 0, 0
 			for j in range(len(i)-1):
-				if j == 0:
-					sums += i[j][0]
-				sums += i[j + 1][0] - i[j][1]
-				x.append(i[j + 1][0] - i[j][1])
-			y.append(sums)
-		criter['crit33'] = sum(y)
-		#criterion6
-		x = []
-		for i in y:
-			if i:
-				x.append(sum(y) / i)
+				x = i[j + 1][0] - i[j][1]
+				sums += x
+				if x:
+					pros += 1
+			tijo.append(sums)
+			nj.append(pros)
 
-		criter['crit35'] = max(x)
-		#criterion7
-		k = list(map(lambda y: y/4, y))
-		criter['crit36'] = sum(k)
-
+		criter = {}
+		criter['crit11'] = max(tijk)
+		#criterion 2.*
+		criter['crit22'] = round(sum(map(lambda l1, l2: l1/(l1 + l2),
+															tkr, tkp)), 2)
+		criter['crit25'] = sum(tkp)
+		criter['crit27'] = round(sum(map(lambda l1, l2: l1/l2 if l2 != 0 else 0,
+															tkp, nk)), 2)
+		criter['crit33'] = sum(tijo)
+		criter['crit35'] = max(map(lambda l1, l2: l1/l2 if l2 != 0 else 0,
+															tijo, nj))
+		criter['crit36'] = sum(map(lambda l1, l2: l1/l2 if l2 != 0 else 0,
+															tijo, nj))
 		return criter
-
-	criter = criterion(timetable_matrix, T, trash_matrix)
+	criter = criterion(T, trash_matrix)
 	return criter, filename
 
 if __name__ == '__main__':
@@ -146,9 +139,9 @@ if __name__ == '__main__':
 		 [5, 6, 4],
 		 [7, 5, 3],
 		 [4, 6, 4]]
-	order = [2, 0, 1, 3]
-	o = [0, 2, 1,3]
+	order = [2, 0, 3, 1]
+	#o = [0, 2, 1,3]
 	c, f = gantt_criteria(T, order)
 	gantt_draw(f)
-	c, f = gantt_criteria(T, o)
-	gantt_draw(f)
+	#c, f = gantt_criteria(T, o)
+	#gantt_draw(f)
