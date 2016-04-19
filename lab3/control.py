@@ -72,7 +72,7 @@ list_max['crit27'] = [i[0] for i in cmp_criter if i[1]['crit27']==maxim['crit27'
 list_max['crit33'] = [i[0] for i in cmp_criter if i[1]['crit33']==maxim['crit33']]
 list_max['crit35'] = [i[0] for i in cmp_criter if i[1]['crit35']==maxim['crit35']]
 list_max['crit36'] = [i[0] for i in cmp_criter if i[1]['crit36']==maxim['crit36']]
-
+'''
 johnson_cmp = {}
 for i in optimized_order:
 	johnson_cmp[i] = {}
@@ -116,3 +116,4 @@ for i in list_max:
 				johnson_cmp['1302'][i], johnson_cmp['3120'][i],
 				johnson_cmp['1320'][i]])
 print(table2)
+'''

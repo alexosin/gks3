@@ -1,6 +1,8 @@
 from prettytable import PrettyTable
 
 def johnson_order(T, m, n):
+	# строит таблицу, но не выводит оптимальный вариант. это уже самостоятельно
+	# без помощи программы
 	def cmp(x):
 		# choose logic operations
 		if x[0] > x[1]:
