@@ -104,8 +104,8 @@ def main():
 	# для подсчета простоев сорт. наше расписание по ГВМ
 	x4 = ordered_timetable(x4)
 	x5 = ordered_timetable(x5)
-	print("Простоi:")
-	print("  Для четвертого правила - %s" % downtime(x4))
-	print("  Для п'ятого правила - %s" % downtime(x5))
+	print("Downtime:")
+	print("  for fourth rule - %s" % downtime(x4))
+	print("  for fifth rule - %s" % downtime(x5))
 if __name__ == "__main__":
 	main()
