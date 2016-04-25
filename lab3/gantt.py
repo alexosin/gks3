@@ -63,7 +63,7 @@ def gantt_criteria(T, order):
 
 	for i in range(len(timetable_matrix)):
 		for j in timetable_matrix[i]:
-			j.insert(0, i + ( (i+1) * 5) - i)
+			j.insert(0, i + ((i+1) * 5) - i)
 
 	for i in range(len(timetable_matrix)):
 		u = 0
