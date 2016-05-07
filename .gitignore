@@ -1,0 +1,8 @@
+__pycache__/
+datafile/
+*.docx
+*.pdf
+*.png
+img/
+img/
+test.py
