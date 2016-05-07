@@ -161,6 +161,9 @@ def main():
 	x4 = gantt_interval(y4)
 	x5 = gantt_interval(y5)
 	# запись в файл для функции ganttDraw
+	dir = os.path.dirname(sys.argv[0]) + '/datafile/'
+	if not os.path.exists(dir):
+		os.makedirs(dir)
 	with open(str(os.path.realpath(os.path.dirname(sys.argv[0])))+'/datafile/'+'41.txt', 'w') as f:
 		f.write('0.5 4 0 30\n')
 		for i in x4:
@@ -180,6 +183,6 @@ def main():
 	ganttDraw.gantt_draw('51')
 	control_timetable(x4, '4 rule')
 	control_timetable(x5, '5 rule')
-	
+
 if __name__ == "__main__":
 	main()

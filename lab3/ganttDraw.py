@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from os import path
+import os
 from sys import argv
 
 def gantt_draw(filename):
 	# Read data from file into variables
-	y, c, x1, x2 = np.loadtxt(str(path.realpath(path.dirname(argv[0]))) + '/datafile/' + filename + '.txt', unpack=True)
+	y, c, x1, x2 = np.loadtxt(str(os.path.realpath(os.path.dirname(argv[0]))) + '/datafile/' + filename + '.txt', unpack=True)
 	# Map value to color
 	color_mapper = np.vectorize(lambda x: {0: 'red', 1: 'blue', 2:'green', 3:'m', 4:'grey'}.get(x))
 
@@ -15,5 +15,8 @@ def gantt_draw(filename):
 	plt.grid(linewidth=3)
 	plt.title('Gantt chart ' + filename)
 	plt.hlines(y, x1, x2, colors=color_mapper(c), linewidths=20)
-	plt.savefig(str(path.realpath(path.dirname(argv[0]))) + '/img/' + filename + '.png')
+	dir = os.path.dirname(argv[0]) + '/img/'
+	if not os.path.exists(dir):
+		os.makedirs(dir)
+	plt.savefig(str(os.path.realpath(os.path.dirname(argv[0]))) + '/img/' + filename + '.png')
 	plt.clf()

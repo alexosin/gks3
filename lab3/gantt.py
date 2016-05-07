@@ -1,4 +1,4 @@
-from os import path
+from os import path, makedirs
 from sys import argv
 from random import choice
 import copy
@@ -75,6 +75,9 @@ def gantt_criteria(T, order):
 	for i in order:
 		s += str(i)
 	filename = s
+	dir = path.dirname(argv[0]) + '/datafile/'
+	if not path.exists(dir):
+		makedirs(dir)
 	f = open(str(path.realpath(path.dirname(argv[0]))) + '/datafile/' + filename + '.txt', 'w')
 	f.write('0 4 0 35\n')
 	for i in range(len(timetable_matrix)):
