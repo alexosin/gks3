@@ -6,22 +6,22 @@ import numpy as np
 def print_list(list):
 	for i in list:
 		print(i)
-	
+
 def cb(xk, **kwargs):
 	print('------------------------------------', kwargs.pop('nit'), '------------------------------------')
 	print('Ведущий элемент ', kwargs.pop('pivot'))
 	print('Индексы столбцов базисных переменных ', kwargs.pop('basis'))
-	print('Симплекс таблица\n') 
+	print('Симплекс таблица\n')
 	print_list(kwargs.pop('tableau').tolist())
 	print('Решение на данной итерации', xk)
 	print('\n\n')
 
-#reading from file	
+#reading from file
 filepath = str(path.realpath(path.dirname(argv[0]))) + '\data.txt'
 data = []
 for line in open(filepath):
 	data.append( [x for x in line.split() ] )
-	
+
 operat = data[0]
 
 # processing c
@@ -37,7 +37,7 @@ A_copy = []
 for i in range(int(data[3][0])):
 	if i == 0:
 		A.append(data[4][2:])
-	else:	
+	else:
 		A.append(data[i+4])
 for i in range(len(A)):
 	A_copy.append(list(map(int, A[i])))
@@ -65,4 +65,3 @@ for i in range(len(x)):
 print('\n')
 #for i in range(len(y)):
 #	print('y'+str(i)+' '+str(y[i]))
-	

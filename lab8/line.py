@@ -3,21 +3,12 @@ import math
 
 class LinePath:
 	def __init__(self, start=(0, 0), end=(0, 0), angle=0, length=0,
-				leading='x', secondary='y', T=0, V=0, step=5):
+				leading='x', secondary='y'):
 		self.start = start
 		self.end = end
 		self.angle = angle
 		self.length = length
 		self.endx, self.endy = end
-		self.T = T
-		self.V = V
-
-	def get_line_func(self):
-		# метод для нахождение коэффициентов функции прямой
-		x1, y1 = self.start
-		x2, y2 = self.endx, self.endy
-		self.k = (y1 - y2) / (x1 - x2) 
-		self.b = y2 - self.k * x2
 
 	def get_endpoint_by_angle(self):
 		# метод для нахождения конечной точки прямой под заданым углом
@@ -25,8 +16,16 @@ class LinePath:
 		x2, y2 = self.endx, self.endy
 		self.length = math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
-		self.endx = math.floor(x1 + self.length * math.cos(math.radians(self.angle)))
-		self.endy = math.ceil(y1 + self.length * math.sin(math.radians(self.angle)))
+		self.endx = x1 + self.length * math.cos(math.radians(self.angle))#)
+		self.endy = y1 + self.length * math.sin(math.radians(self.angle))#)
+
+	def get_line_func(self):
+		# метод для нахождение коэффициентов функции прямой
+		x1, y1 = self.start
+		x2, y2 = self.endx, self.endy
+		self.k = (y1 - y2) / (x1 - x2)
+		self.b = y2 - self.k * x2
+
 
 	def get_leading_axis(self):
 		# метод для определение ведущей оси
@@ -47,8 +46,7 @@ class LinePath:
 			y = self.start[1]
 			x_points.append(x)
 			y_points.append(y)
-			while (x <= self.end[0] and y <= self.end[1]) or \
-								(x <= self.endx and y <= self.endy):
+			for i in range(int(self.X / step)):
 				if y >= (self.k * x + self.b):
 					x = x + step
 				else:
@@ -61,8 +59,7 @@ class LinePath:
 			y = self.start[1] + step
 			x_points.append(x)
 			y_points.append(y)
-			while (x <= self.end[0] and y <= self.end[1]) or \
-								(x <= self.endx and y <= self.endy):
+			for i in range(int(self.Y / step)):
 				if x >= (y - self.b) / self.k:
 					y = y + step
 				else:
@@ -86,7 +83,7 @@ class LinePath:
 		if plotted:
 			self.plot_inter1()
 
-	def calc_parametr(self, T = 0, V = 0, step = 5):
+	def calc_parametr(self, T, V, step):
 		# расчитуем начальные данные для построения траектории методом на
 		# несучей частоте ЦДА
 		self.T = T
@@ -95,11 +92,14 @@ class LinePath:
 		self.X = self.endx-self.start[0]
 		self.Y = self.endy-self.start[1]
 		self.tau = math.sqrt(self.X**2 + self.Y**2) / self.V
-		self.imax = math.ceil(self.tau / self.T)
+		self.imax = math.floor(self.tau / self.T)
+		print(self.imax)
 		self.delta_x = (self.X * self.T) / self.tau
 		self.delta_y = (self.Y * self.T) / self.tau
 		self.delta_x1 = int(self.delta_x / step) * step
 		self.delta_y1 = int(self.delta_y / step) * step
+		print('delta_x = {}, delta_y = {}'.format(self.delta_x, self.delta_y))
+		print('delta_x_step = {}, delta_y_step = {}'.format(self.delta_x1, self.delta_y1))
 
 	def method_cont_carrier_freq(self, plotted = False):
 		# метод оценочной функции на постоянной несущей частоте
@@ -109,6 +109,7 @@ class LinePath:
 		sum_delta_y = 0
 
 		# считаем приросты по осям
+		print('\nFrequence Interpolation')
 		for i in range(1, self.imax):
 			N = sum_delta_x + self.delta_x1 - i * self.delta_x
 			M = sum_delta_y + self.delta_y1 - i * self.delta_y
@@ -118,11 +119,12 @@ class LinePath:
 			dy = self.delta_y1 if M > 0 else self.delta_y1 + self.step
 			sum_delta_y += dy
 			y_growth.append(dy)
+			print('N = {}, x = {}, M = {}, y = {}'.format(N, dx, M, dy))
 		dx = self.X - sum_delta_x
 		dy = self.Y - sum_delta_y
 		if dx and dy:
-			x_points.append(dx)
-			y_points.append(dy)
+			x_growth.append(dx)
+			y_growth.append(dy)
 
 		# находим точки для построения траектории
 		x_points.append(self.start[0])
@@ -130,7 +132,7 @@ class LinePath:
 		for i in range(len(x_growth)):
 			x_points.append(x_points[-1] + x_growth[i])
 			y_points.append(y_points[-1] + y_growth[i])
-		self.inter_freq = {'x': x_points, 'y': y_points}
+		self.inter_freq = {'x': x_points[1:], 'y': y_points[1:]}
 		if plotted:
 			self.plot_inter2()
 
@@ -142,6 +144,7 @@ class LinePath:
 		y_balance = 0
 		sum_delta_x = 0
 		sum_delta_y = 0
+		print('\nCDA Interpolation')
 		for i in range(1, self.imax):
 			x_full = self.delta_x + x_balance
 			y_full = self.delta_y + y_balance
@@ -153,6 +156,8 @@ class LinePath:
 			sum_delta_y += dy
 			x_growth.append(dx)
 			y_growth.append(dy)
+			print('xf = {}, yf = {}, dx = {}, dy = {}, xb = {} , yb = {}' \
+				.format(x_full, y_full, dx, dy, x_balance, y_balance))
 
 		dx = self.X - sum_delta_x
 		dy = self.Y - sum_delta_y
@@ -165,7 +170,7 @@ class LinePath:
 		for i in range(len(x_growth)):
 			x_points.append(x_points[-1] + x_growth[i])
 			y_points.append(y_points[-1] + y_growth[i])
-		self.inter_cda = {'x': x_points, 'y': y_points}
+		self.inter_cda = {'x': x_points[1:], 'y': y_points[1:]}
 		if plotter:
 			self.plot_inter3()
 
