@@ -69,7 +69,7 @@ class LinePath:
 				y_points.append(y)
 		x_points.append(self.endx)
 		y_points.append(self.endy)
-		self.inter_predict = {'x': x_points, 'y': y_points}
+		self.inter_predict = {'x2': x_points, 'y2': y_points}
 		if self.leading == 'x':
 			x_points = list(map(lambda i: i - 1, x_points[1:-1]))
 			x_points.append(self.endx)
@@ -78,12 +78,12 @@ class LinePath:
 			y_points = list(map(lambda i: i - 1, y_points[1:-1]))
 			y_points.append(self.endy)
 			y_points.insert(0, self.start[1])
-		self.inter_predict['x2'] = x_points
-		self.inter_predict['y2'] = y_points
+		self.inter_predict['x'] = x_points
+		self.inter_predict['y'] = y_points
 		if plotted:
 			self.plot_inter1()
 
-	def calc_parametr(self, T, V, step):
+	def calc_parametr(self, T, V, step, plotted=False):
 		# расчитуем начальные данные для построения траектории методом на
 		# несучей частоте ЦДА
 		self.T = T
@@ -93,13 +93,14 @@ class LinePath:
 		self.Y = self.endy-self.start[1]
 		self.tau = math.sqrt(self.X**2 + self.Y**2) / self.V
 		self.imax = math.floor(self.tau / self.T)
-		print(self.imax)
 		self.delta_x = (self.X * self.T) / self.tau
 		self.delta_y = (self.Y * self.T) / self.tau
 		self.delta_x1 = int(self.delta_x / step) * step
 		self.delta_y1 = int(self.delta_y / step) * step
-		print('delta_x = {}, delta_y = {}'.format(self.delta_x, self.delta_y))
-		print('delta_x_step = {}, delta_y_step = {}'.format(self.delta_x1, self.delta_y1))
+		if plotted:
+			print(self.imax)
+			print('delta_x = {}, delta_y = {}'.format(self.delta_x, self.delta_y))
+			print('delta_x_step = {}, delta_y_step = {}'.format(self.delta_x1, self.delta_y1))
 
 	def method_cont_carrier_freq(self, plotted = False):
 		# метод оценочной функции на постоянной несущей частоте
@@ -109,7 +110,8 @@ class LinePath:
 		sum_delta_y = 0
 
 		# считаем приросты по осям
-		print('\nFrequence Interpolation')
+		if plotted:
+			print('\nFrequence Interpolation')
 		for i in range(1, self.imax):
 			N = sum_delta_x + self.delta_x1 - i * self.delta_x
 			M = sum_delta_y + self.delta_y1 - i * self.delta_y
@@ -119,7 +121,8 @@ class LinePath:
 			dy = self.delta_y1 if M > 0 else self.delta_y1 + self.step
 			sum_delta_y += dy
 			y_growth.append(dy)
-			print('N = {}, x = {}, M = {}, y = {}'.format(N, dx, M, dy))
+			if plotted:
+				print('N = {}, x = {}, M = {}, y = {}'.format(N, dx, M, dy))
 		dx = self.X - sum_delta_x
 		dy = self.Y - sum_delta_y
 		if dx and dy:
@@ -136,7 +139,7 @@ class LinePath:
 		if plotted:
 			self.plot_inter2()
 
-	def CDA(self, plotter=False):
+	def CDA(self, plotted=False):
 		# метод цифрового дифференциального анализатора
 		x_points, y_points = [], []
 		x_growth, y_growth = [], []
@@ -144,7 +147,8 @@ class LinePath:
 		y_balance = 0
 		sum_delta_x = 0
 		sum_delta_y = 0
-		print('\nCDA Interpolation')
+		if plotted:
+			print('\nCDA Interpolation')
 		for i in range(1, self.imax):
 			x_full = self.delta_x + x_balance
 			y_full = self.delta_y + y_balance
@@ -156,7 +160,8 @@ class LinePath:
 			sum_delta_y += dy
 			x_growth.append(dx)
 			y_growth.append(dy)
-			print('xf = {}, yf = {}, dx = {}, dy = {}, xb = {} , yb = {}' \
+			if plotted:
+				print('xf = {}, yf = {}, dx = {}, dy = {}, xb = {} , yb = {}' \
 				.format(x_full, y_full, dx, dy, x_balance, y_balance))
 
 		dx = self.X - sum_delta_x
@@ -171,8 +176,17 @@ class LinePath:
 			x_points.append(x_points[-1] + x_growth[i])
 			y_points.append(y_points[-1] + y_growth[i])
 		self.inter_cda = {'x': x_points[1:], 'y': y_points[1:]}
-		if plotter:
+		if plotted:
 			self.plot_inter3()
+
+	def find_distance(self, M):
+		x1, y1 = self.start
+		x2, y2 = self.endx, self.endy
+		A = y1 - y2
+		B = x2 - x1
+		C = x1 * y2 - x2 * y1
+		d = abs(A*M[0] + B*M[1] + C) / (math.sqrt(A**2 + B**2))
+		return round(d, 5)
 
 	def plot_inter1(self):
 		# интерполяция за методом прогнозирования шага
