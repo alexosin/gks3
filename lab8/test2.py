@@ -23,21 +23,20 @@ def step_fault(line):
 	print('\nFault step')
 	fault1, fault2, fault3 = [], [], []
 	for j in range(1, 10):
-		faults = []
 		line.calc_parametr(T=3, V=5, step=j)
 		line.get_path_by_interpolation_predict(j)
 		line.method_cont_carrier_freq()
 		line.CDA()
 		def find_fault(data):
+			faults = []
 			points = list(zip(data['x'], data['y']))
-			for i in points[1:-1]:
+			for i in points:
 				faults.append(line.find_distance(i))
 			#print(j, np.mean(faults), max(faults), sum(faults))
 			return(j, np.mean(faults), max(faults), sum(faults))
 		fault1.append(find_fault(line.inter_predict))
 		fault2.append(find_fault(line.inter_freq))
 		fault3.append(find_fault(line.inter_cda))
-		print(faults)
 	for j in range(1,4):
 		zero = [i[0] for  i in fault1]
 		first =  [i[j] for i in fault1]
@@ -54,10 +53,7 @@ def angle_fault():
 	print('\nAngle fault')
 	fault1, fault2, fault3 = [], [], []
 	for j in range(1, 90):
-		faults = []
-		start, end = [(20, 25), (40, 85)]
-		angle = j
-		line1 = line.LinePath(start, end, angle)
+		line1 = line.LinePath((20, 25), (40, 85), j)
 		line1.get_endpoint_by_angle()
 		line1.get_line_func()
 		line1.calc_parametr(T=3, V=5, step=5)
@@ -65,6 +61,7 @@ def angle_fault():
 		line1.method_cont_carrier_freq()
 		line1.CDA()
 		def find_fault(data):
+			faults = []
 			points = list(zip(data['x'], data['y']))
 			for i in points:
 				faults.append(line1.find_distance(i))
@@ -111,7 +108,7 @@ def freq_fault(line):
 
 def main():
 	start, end = [(20, 25), (40, 85)]
-	angle = 24
+	angle = 71
 	line1 = line.LinePath(start, end, angle)
 	line1.get_endpoint_by_angle()
 	line1.get_line_func()

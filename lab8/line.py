@@ -14,7 +14,8 @@ class LinePath:
 		# метод для нахождения конечной точки прямой под заданым углом
 		x1, y1 = self.start
 		x2, y2 = self.endx, self.endy
-		self.length = math.sqrt((x2-x1)**2 + (y2-y1)**2)
+		if not self.length:
+			self.length = math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
 		self.endx = x1 + self.length * math.cos(math.radians(self.angle))#)
 		self.endy = y1 + self.length * math.sin(math.radians(self.angle))#)
@@ -98,7 +99,6 @@ class LinePath:
 		self.delta_x1 = int(self.delta_x / step) * step
 		self.delta_y1 = int(self.delta_y / step) * step
 		if plotted:
-			print(self.imax)
 			print('delta_x = {}, delta_y = {}'.format(self.delta_x, self.delta_y))
 			print('delta_x_step = {}, delta_y_step = {}'.format(self.delta_x1, self.delta_y1))
 
@@ -192,9 +192,9 @@ class LinePath:
 		# интерполяция за методом прогнозирования шага
 		plt.plot([self.start[0], self.endx], [self.start[1], self.endy])
 		plt.plot(self.inter_predict['x'], self.inter_predict['y'], '--', color='r')
-		plt.plot(self.inter_predict['x2'], self.inter_predict['y2'], '--', color='k')
+		plt.plot(self.inter_predict['x2'], self.inter_predict['y2'], '-', color='k')
 		plt.title('Interpolation 1')
-		plt.axis([self.start[0]-1, self.endx+10, self.start[1]-1, self.endy+10])
+		plt.axis([self.start[0]-1, self.endx+1, self.start[1]-1, self.endy+1])
 		plt.grid(True)
 		plt.show()
 
@@ -203,7 +203,7 @@ class LinePath:
 		plt.plot([self.start[0], self.endx], [self.start[1], self.endy])
 		plt.plot(self.inter_freq['x'], self.inter_freq['y'], 'o', color='r')
 		plt.title('Interpolation 2')
-		plt.axis([self.start[0]-1, self.endx+10, self.start[1]-1, self.endy+10])
+		plt.axis([self.start[0]-1, self.endx+1, self.start[1]-1, self.endy+1])
 		plt.grid(True)
 		plt.show()
 
@@ -212,6 +212,6 @@ class LinePath:
 		plt.plot([self.start[0], self.endx], [self.start[1], self.endy])
 		plt.plot(self.inter_cda['x'], self.inter_cda['y'], 'o', color='r')
 		plt.title('Interpolation 3')
-		plt.axis([self.start[0]-1, self.endx+10, self.start[1]-1, self.endy+10])
+		plt.axis([self.start[0]-1, self.endx+1, self.start[1]-1, self.endy+1])
 		plt.grid(True)
 		plt.show()
