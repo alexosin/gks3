@@ -1,5 +1,4 @@
 import circle
-import sys
 
 circle1 = circle.CirclePath((70, 85), 30, T=3, V= 5, step=5)
 #circle1.plot_circle()

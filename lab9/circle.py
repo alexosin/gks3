@@ -53,14 +53,6 @@ class CirclePath:
 		self.deltaFi = (self.V * self.T) / self.R
 		self.imax = math.floor(self.tau / self.T)
 
-	def plot_circle(self):
-		plt.axis('equal')
-		plt.grid()
-		plt.plot([self.bisector.start[0], self.bisector.endx],
-				[self.bisector.start[1], self.bisector.endy], '--')
-		plt.plot(self.list_x2_axis,self.list_y2_axis,c='b')
-		plt.show()
-
 	def get_distance_between_center_and_point(self, pointX, pointY):
 		# найти расстояние между жвумя точками
 		return math.sqrt((pointX-self.centerX)**2 + (pointY-self.centerY)**2)
