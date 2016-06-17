@@ -126,7 +126,7 @@ class CirclePath:
 				if plotted:
 					print('N = {}, delta_x = {}, x = {}, M = {}, delta_y = {}, y = {}'
 							.format(N, x, delta_x, M, delta_y, y))
-			print("{0}: delta_x{0} = {1}, delta{0} = {2}".format(i, delta_x, delta_y))
+					print("{0}: delta_x{0} = {1}, delta{0} = {2}".format(i, delta_x, delta_y))
 			x_growth.append(delta_x)
 			y_growth.append(delta_y)
 			x_end = x
@@ -145,7 +145,6 @@ class CirclePath:
 		x_end = self.start[0]
 		y_end = self.start[1]
 		x_points, y_points = [x_end], [y_end]
-		print(self.deltaFi)
 		if plotted:
 			print("\nMethod of corrections and forecast")
 		while True:
@@ -163,8 +162,10 @@ class CirclePath:
 			x_points.append(x_end)
 			y_points.append(y_end)
 			if self.get_distance_between_center_and_point(x_end, y_end) >= self.radius:
-				x_end += self.step
+				x_end -= self.step
 				y_end -= self.step
+				x_points.append(x_end)
+				y_points.append(y_end)
 		if x_points[-1] > self.end[0]:
 			x_points.append(self.end[0])
 			y_points.append(self.end[1])
