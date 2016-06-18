@@ -1,6 +1,13 @@
+import matplotlib.pyplot as plt
+import sys
+import numpy as np
+import operator
+import os
+import matplotlib.patches as mpatches
+
 def extend_gantt_draw(filename):
 	# Read data from file into variables
-	y, c, x1, x2 = np.loadtxt(str(os.path.realpath(os.path.dirname(sys.argv[0]))) + '/datafile/' + filename + '.txt', unpack=True)
+	y, c, x1, x2 = np.loadtxt(str(os.path.realpath(os.path.dirname(sys.argv[0]))) + '/' + filename + '.txt', unpack=True)
 	print('Час виробничого циклу = ', max(x2))
 	# Map value to color
 	colors = ['#f44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#212121',
